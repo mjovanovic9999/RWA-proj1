@@ -1,0 +1,9 @@
+.TitleDiv {
+  display: flex;
+  justify-content: center;
+}
+
+.Title {
+  font-size: 35px;
+  color: whitesmoke;
+}

@@ -1,0 +1,38 @@
+.AutocompleteParent {
+  width: 217px;
+  float:right;
+  position: absolute;
+  top:4.5%;
+  right: 15%;
+}
+
+.Autocomplete {
+  padding-left: 5px;
+  border-radius: 10px;
+  background-color: rgba(246, 252, 255, 0.95);
+  font-size: 20px;
+}
+
+.AutocompleteListResult {
+  margin: 0;
+  margin-left: 5px;
+  padding: 0;
+  border-bottom-right-radius: 10px;
+  border-bottom-left-radius: 10px;
+  background-color: rgba(246, 252, 255, 0.95);
+  font-size: 20px;
+}
+
+.AutocompleteOneResult {
+  list-style-type: none;
+  padding-left: 5px;
+  font-size: 20px;
+}
+
+.AutocompleteListResult :hover {
+  background-color: #cacaca;
+}
+
+.AutocompleteListResult :focus {
+  background-color: rgb(136, 204, 226);
+}

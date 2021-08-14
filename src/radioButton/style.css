@@ -1,0 +1,32 @@
+.RadioLabel {
+  /* color:white; */
+  font-size: 20px;
+  margin: 5px;
+}
+.RadioParent {
+  display: flex;
+  padding: 10px;
+  width: 150px;
+}
+
+.DivParentFirst {
+  margin: 2px;
+  display: flex;
+  flex-direction: column;
+  background-color: rgba(246, 252, 255, 0.95);
+  border-radius: 25px;
+  position: absolute;
+  top:4%;
+  right: 1%;
+}
+
+.DivParentSecond {
+  margin: 2px;
+  display: flex;
+  flex-direction: column;
+  background-color: rgba(246, 252, 255, 0.95);
+  border-radius: 25px;
+  position: absolute;
+  top:20%;
+  right: 1%;
+}

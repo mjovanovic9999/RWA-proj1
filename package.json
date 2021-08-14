@@ -1,0 +1,31 @@
+{
+  "name": "rwa",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --config webpack.config.js",
+    "watch": "webpack --watch --config webpack.config.js",
+    "json": "json-server --watch db.json"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "css-loader": "^6.2.0",
+    "style-loader": "^3.2.1",
+    "ts-loader": "^8.0.18",
+    "typescript": "^4.2.3",
+    "webpack": "^5.26.3",
+    "webpack-cli": "^4.5.0"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.15.4",
+    "@fortawesome/fontawesome-svg-core": "^1.2.36",
+    "@fortawesome/free-solid-svg-icons": "^5.15.4",
+    "@types/chart.js": "^2.9.34",
+    "chart.js": "2.9.4",
+    "json-server": "^0.16.3",
+    "rxjs": "^7.3.0"
+  }
+}

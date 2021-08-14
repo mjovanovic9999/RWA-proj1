@@ -1,0 +1,8 @@
+.Canvas {
+  background-color: rgba(246, 252, 255, 0.95);
+  width: 1010px;
+  height: 530px;
+  border-radius: 5%;
+  padding: 15px;
+  padding-bottom: 0px;
+}

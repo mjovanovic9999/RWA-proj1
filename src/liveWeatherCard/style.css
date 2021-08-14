@@ -1,0 +1,51 @@
+.Card {
+  background-color: rgba(246, 252, 255, 0.95); /* mzd transparency */
+  border-radius: 25px;
+  border: 2px solid #ff0000;
+  width: 225px;
+  height: 300px;
+  position: absolute;
+  bottom: 3%;
+  right: 1%;
+}
+
+.CardTitle {
+  display: flex;
+  justify-content: center;
+  font-size: 25px;
+  color: rgb(30, 51, 51);
+  padding-bottom: 15px;
+}
+
+.PrecipitationIcon {
+  color: rgb(71, 71, 248);
+  height: 30px;
+}
+
+.TemperatureIcon {
+  color: rgb(248, 71, 71);
+  height: 30px;
+}
+.ValueContainerDiv {
+  display: flex;
+  flex-direction: column;
+  height: 200px;
+
+  align-items: center;
+
+  justify-content: space-evenly;
+
+  /* background-color: aqua; */
+}
+
+.CreateDiv {
+  display: flex;
+  /* flex-direction: row;
+    align-content: center; */
+  justify-content: space-evenly;
+
+  font-size: 25px;
+  color: rgb(30, 51, 51);
+  padding-bottom: 15px;
+  width: 225px;
+}
