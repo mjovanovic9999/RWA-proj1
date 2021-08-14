@@ -24,6 +24,10 @@ export class Autocomplete {
   private currentText: BehaviorSubject<string> = new BehaviorSubject<string>(
     ""
   );
+  private placeSubject: Subject<string> = new Subject<string>();
+  public get PlaceSubject(): Subject<string> {
+    return this.placeSubject;
+  }
 
   private subscription: Subscription;
 
@@ -96,6 +100,7 @@ export class Autocomplete {
         this.RemoveSugestions();
         this.searchBox.value = x;
         this.hasSelectedValue = true;
+        this.placeSubject.next(this.searchBox.value);
       });
 
     fromEvent(this.sugestionsList, "keydown")
@@ -106,6 +111,7 @@ export class Autocomplete {
         this.searchBox.value = document.activeElement.textContent;
         this.hasSelectedValue = true;
         this.RemoveSugestions();
+        this.placeSubject.next(this.searchBox.value);
       });
   }
 

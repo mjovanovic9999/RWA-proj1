@@ -11,20 +11,27 @@ export class ViewMain {
   constructor() {
     this.InitializeHTML();
     this.DrawTitle();
-    const pom = new RadioButton(this.mainDiv);//ne treba pom
-    new Autocomplete(this.mainDiv);
-    new LiveWeatherCard(this.mainDiv);
+    const pom = new RadioButton(this.mainDiv);
+    const auto = new Autocomplete(this.mainDiv);
+    new LiveWeatherCard(
+      this.mainDiv,
+      auto.PlaceSubject,
+      pom.TemperatureSubject,
+      pom.PrecipitationSubject
+    );
 
-    Promise.all([
-      FetchMonthTemperatures("Pirot", 8),
-      FetchMonthPrecipitations("Pirot", 8),
-    ]).then((x: number[][]) => new MyChart(document.body, x[0], x[1]));
+    new MyChart(
+      document.body,
+      auto.PlaceSubject,
+      pom.TemperatureSubject,
+      pom.PrecipitationSubject
+    );
   }
 
   InitializeHTML() {
     this.mainDiv = document.createElement("div");
     document.body.append(this.mainDiv);
-    
+
     const header = document.createElement("title");
     header.innerHTML = "MyWeather";
     document.head.append(header);
@@ -39,8 +46,5 @@ export class ViewMain {
     title.innerHTML = "Welcome to MyWeather";
     title.className = "Title";
     titleDiv.append(title);
-
-    alert("sta")
-
   }
 }

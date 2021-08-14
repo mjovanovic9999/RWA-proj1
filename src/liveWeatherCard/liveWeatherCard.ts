@@ -6,34 +6,38 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FetchLiveWeather } from "../fetch";
 import { ILiveWeather } from "../interface";
+import { Subject } from "rxjs";
 
 export class LiveWeatherCard {
-  constructor(host: HTMLElement) {
+  private precipitationSymbol: string;
+  private temperatureSymbol: string;
+  private valueContainerDiv: HTMLElement;
+  private titleP: HTMLElement;
+
+  constructor(
+    host: HTMLElement,
+    place: Subject<string>,
+    temperatureUnit: Subject<boolean>,
+    precipitationUnit: Subject<boolean>
+  ) {
+    this.InitializeHTML(host);
+    this.SubscribePlace(this.titleP, place);
+    this.SubscribeTemperature(temperatureUnit);
+    this.SubscribePrecipitation(precipitationUnit);
+  }
+
+  InitializeHTML(host: HTMLElement) {
     const card = this.DrawCard(host);
 
-    const title = document.createElement("p");
-    title.innerHTML = "Backa Palanka"; //u obj iz obs vrv
-    title.className = "CardTitle";
-    card.append(title);
+    this.titleP = document.createElement("p");
+    this.titleP.className = "CardTitle";
+    card.append(this.titleP);
 
-    const valueContainerDiv = document.createElement("div");
-    valueContainerDiv.className = "ValueContainerDiv";
-    card.append(valueContainerDiv);
-
-    FetchLiveWeather("Pirot")
-      .then((x: ILiveWeather[]) => {
-        console.log(x);
-        this.CreatePrecipitationDiv(
-          valueContainerDiv,
-          x[0].precipitationProbability.toString()
-        );
-        this.CreateTemperatureDiv(
-          valueContainerDiv,
-          x[0].temperature.toString()
-        );
-      })
-      .catch(console.log);
+    this.valueContainerDiv = document.createElement("div");
+    this.valueContainerDiv.className = "ValueContainerDiv";
+    card.append(this.valueContainerDiv);
   }
+
   DrawCard(host: HTMLElement): HTMLElement {
     const card = document.createElement("div");
     card.className = "Card";
@@ -75,5 +79,47 @@ export class LiveWeatherCard {
     // precipitationDiv.append(precipitationIconDiv);
     precipitationDiv.append(precipitationIconDiv, precipitationValueDiv);
     host.append(precipitationDiv);
+  }
+
+  SubscribePlace(titleP: HTMLElement, subject: Subject<string>) {
+    subject.subscribe((x) => {
+      titleP.innerHTML = x;
+      FetchLiveWeather(x)
+        .then((x: ILiveWeather[]) => {
+          this.CreatePrecipitationDiv(
+            this.valueContainerDiv,
+            x[0].precipitationProbability.toString()
+          );
+          this.CreateTemperatureDiv(
+            this.valueContainerDiv,
+            x[0].temperature.toString()
+          );
+        })
+        .catch(console.log);
+    });
+  }
+
+  private SubscribeTemperature(subject: Subject<boolean>) {
+    subject.subscribe((x) => {
+      if (x === false) {
+        this.temperatureSymbol = "°F";
+        // (x * 9) / 5 + 32);
+      } else {
+        this.temperatureSymbol = "°C";
+        //(x - 32) * 5) / 9);
+      }
+    });
+  }
+
+  private SubscribePrecipitation(subject: Subject<boolean>) {
+    subject.subscribe((x) => {
+      if (x === false) {
+        this.precipitationSymbol = "ml";
+        //(x) => x * 1000);
+      } else {
+        this.precipitationSymbol = "mm";
+        // x / 1000);
+      }
+    });
   }
 }

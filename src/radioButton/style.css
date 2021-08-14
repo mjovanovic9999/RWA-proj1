@@ -6,14 +6,14 @@
 .RadioParent {
   display: flex;
   padding: 10px;
-  width: 150px;
+  width: 200px;
 }
 
 .DivParentFirst {
   margin: 2px;
   display: flex;
   flex-direction: column;
-  background-color: rgba(246, 252, 255, 0.95);
+  background-color: rgba(246, 252, 255, 0.70);
   border-radius: 25px;
   position: absolute;
   top:4%;
@@ -24,9 +24,9 @@
   margin: 2px;
   display: flex;
   flex-direction: column;
-  background-color: rgba(246, 252, 255, 0.95);
+  background-color: rgba(246, 252, 255, 0.70);
   border-radius: 25px;
   position: absolute;
-  top:20%;
+  top:23%;
   right: 1%;
 }

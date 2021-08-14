@@ -1,61 +1,51 @@
-import './style.css'
-
+import "./style.css";
 
 import * as Chart from "chart.js";
+import { Subject } from "rxjs";
+import { FetchMonthPrecipitations, FetchMonthTemperatures } from "../fetch";
 
 //import { Chart,LinearScale  } from "chart.js";
 
-interface IChartInfo {
-  labels: string[];
-  datasets: [
-    {
-      label: string;
-      data: number[];
-      backgroundColor: string[];
-      borderColor: string[];
-      borderWidth: number;
-      tension: number;
-      yAxisID: string;
-    },
-    {
-      label: string;
-      data: number[];
-      backgroundColor: string[];
-      borderColor: string[];
-      borderWidth: number;
-      tension: number;
-      yAxisID: string;
-    }
-  ];
-}
 export default class MyChart {
   private canvas: HTMLCanvasElement;
+  private canvasParentDiv: HTMLElement;
   private chartInstance: any; //Chart
   //private labels: string[];
   private pointsLeft: number[];
   private pointsRight: number[];
+  private leftUnit = "°C";
+  private rightUnit = "mm";
 
   constructor(
     host: HTMLElement,
-    //labels: string[],
-    pointsLeft: number[],
-    pointsRight: number[]
+    place: Subject<string>,
+    temperatureUnit: Subject<boolean>,
+    precipitationUnit: Subject<boolean>
   ) {
-    //this.labels = labels;
-    this.pointsLeft = pointsLeft;
-    this.pointsRight = pointsRight;
 
-    const canvasParentDiv: HTMLElement = document.createElement("div");
-    canvasParentDiv.className = "Canvas";
+    this.SubscribePlace(place);
 
-    host.appendChild(canvasParentDiv);
+    this.canvasParentDiv = document.createElement("div");
+    this.canvasParentDiv.className = "Canvas";
 
-    this.canvas = document.createElement("canvas");
-    canvasParentDiv.appendChild(this.canvas);
+    host.appendChild(this.canvasParentDiv);
+
+    this.AppendCanvas();
     this.draw();
+
+    this.SubscribeTemperature(temperatureUnit);
+    this.SubscribePrecipitation(precipitationUnit);
   }
 
   private draw(): void {
+    if (this.chartInstance) {
+      delete this.chartInstance;
+      this.chartInstance = null;
+
+      this.canvasParentDiv.removeChild(this.canvas);
+      this.AppendCanvas();
+    }
+
     const pom: Chart.ChartConfiguration = {
       type: "bar",
       data: {
@@ -181,11 +171,10 @@ export default class MyChart {
         ],
       },
       options: {
-        plugins: {
-          title: {
-            display: true,
-            text: "Chart.js Line Chart - Multi Axis",
-          },
+        title: {
+          display: true,
+          text: "August",
+          fontSize: 20,
         },
         scales: {
           yAxes: [
@@ -196,7 +185,7 @@ export default class MyChart {
               id: "y1",
               type: "linear",
               position: "left",
-              scaleLabel: { display: true, labelString: "Temperature" },
+              scaleLabel: { display: true, labelString: this.leftUnit },
               ticks: {
                 beginAtZero: true,
               },
@@ -207,7 +196,7 @@ export default class MyChart {
               id: "y2",
               type: "linear",
               position: "right",
-              scaleLabel: { display: true, labelString: "Precipitation" },
+              scaleLabel: { display: true, labelString: this.rightUnit },
               ticks: {
                 beginAtZero: true,
               },
@@ -245,24 +234,47 @@ export default class MyChart {
     return;
   }
 
-  addPointLeft(newPoint: number): void {
-    //test
-    const data = this.chartInstance.data;
-    if (data.datasets.length > 0) {
-      data.labels = [...data.labels, "jukuku"];
-
-      data.datasets[0].data.push(newPoint);
-      this.chartInstance.update();
-    }
+  private AppendCanvas() {
+    this.canvas = document.createElement("canvas");
+    this.canvasParentDiv.appendChild(this.canvas);
   }
-  addPointRight(newPoint: number): void {
-    //test
-    const data = this.chartInstance.data;
-    if (data.datasets.length > 0) {
-      data.labels = [...data.labels, "jukuku"];
 
-      data.datasets[1].data.push(newPoint);
-      this.chartInstance.update();
-    }
+  private SubscribeTemperature(subject: Subject<boolean>) {
+    subject.subscribe((x) => {
+      if (x === false) {
+        this.leftUnit = "°F";
+        this.pointsLeft = this.pointsLeft.map((x) => (x * 9) / 5 + 32);
+      } else {
+        this.leftUnit = "°C";
+        this.pointsLeft = this.pointsLeft.map((x) => ((x - 32) * 5) / 9);
+      }
+      this.draw();
+    });
+  }
+
+  private SubscribePrecipitation(subject: Subject<boolean>) {
+    subject.subscribe((x) => {
+      if (x === false) {
+        this.rightUnit = "ml";
+        this.pointsRight = this.pointsRight.map((x) => x * 1000);
+      } else {
+        this.rightUnit = "mm";
+        this.pointsRight = this.pointsRight.map((x) => x / 1000);
+      }
+      this.draw();
+    });
+  }
+
+  private SubscribePlace(subject: Subject<string>) {
+    subject.subscribe((x) => {
+      Promise.all([
+        FetchMonthTemperatures(x, 8),
+        FetchMonthPrecipitations(x, 8),
+      ]).then((x: number[][]) => {
+        this.pointsLeft = x[0];
+        this.pointsRight = x[1];
+        this.draw();
+      });
+    });
   }
 }

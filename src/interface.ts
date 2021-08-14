@@ -26,3 +26,27 @@ export interface Settings{
   isCelsius: boolean;
   isMm: boolean;
 }
+
+// export interface IChartInfo {//vrv ne trabe
+//   labels: string[];
+//   datasets: [
+//     {
+//       label: string;
+//       data: number[];
+//       backgroundColor: string[];
+//       borderColor: string[];
+//       borderWidth: number;
+//       tension: number;
+//       yAxisID: string;
+//     },
+//     {
+//       label: string;
+//       data: number[];
+//       backgroundColor: string[];
+//       borderColor: string[];
+//       borderWidth: number;
+//       tension: number;
+//       yAxisID: string;
+//     }
+//   ];
+// }

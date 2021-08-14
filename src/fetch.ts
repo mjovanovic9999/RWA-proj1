@@ -40,8 +40,6 @@ export function FetchMonthTemperatures(
 
 export function FetchLocations(value: string): Promise<string[]> {
   if (value === "") return Promise.resolve([]);
-  console.log("iz fetch" + value);
-
   const regex = new RegExp(`^${value.toUpperCase()}`);
   return FetchAllLocations().then((value: string[]) =>
     value.filter((x: string) => regex.test(x))

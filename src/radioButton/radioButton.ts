@@ -1,4 +1,4 @@
-import { fromEvent } from "rxjs";
+import { fromEvent, map, Observable, Subject } from "rxjs";
 import "./style.css";
 //celsius u farenhait x*9/5 +32
 //mm u 1000* ml
@@ -8,19 +8,31 @@ export class RadioButton {
   private isMm = true;
   private host: HTMLElement;
   private radioTemperature: HTMLElement;
-  private radioFahrenheit: HTMLElement;
+  private radioPrecipitation: HTMLElement;
+
+  private temperatureSubject: Subject<boolean>=new Subject<boolean>();
+  public get TemperatureSubject(): Subject<boolean> {
+    return this.temperatureSubject;
+  }
+
+  private precipitationSubject: Subject<boolean>=new Subject<boolean>();;
+  public get PrecipitationSubject(): Subject<boolean> {
+    return this.precipitationSubject;
+  }
 
   constructor(host: HTMLElement) {
     this.host = host;
     this.isCelsius = true;
     this.DrawDoubleRadioGroups();
-    this.RadioTemperatureUnitObservable();
   }
 
   private DrawDoubleRadioGroups() {
     this.isMm = true;
     this.DrawRadio("temp", "Celsius", "Fahrenheit", "DivParentFirst", true);
     this.DrawRadio("preci", "mm", "ml", "DivParentSecond", false);
+
+    this.RadioTemperatureUnitObservable();
+    this.RadioPrecipitationUnitObservable();
   }
 
   private DrawRadio(
@@ -37,7 +49,7 @@ export class RadioButton {
     if (isFirstGroup) {
       this.radioTemperature = parentDiv;
     } else {
-      this.radioFahrenheit = parentDiv;
+      this.radioPrecipitation = parentDiv;
     }
 
     const firstParent = document.createElement("div");
@@ -75,11 +87,16 @@ export class RadioButton {
     // secondParent.append(secondRadio);
   }
 
-  RadioTemperatureUnitObservable() {
-    fromEvent(this.radioTemperature, "change").subscribe(console.log);
+  private RadioTemperatureUnitObservable() {
+    fromEvent(this.radioTemperature, "change")
+      .pipe(map((e: Event) => (e.target as HTMLInputElement).value === "true"))
+      .subscribe(this.temperatureSubject);
+      this.temperatureSubject.subscribe(console.log)
   }
 
-  RadioFahrenheitUnitObservable() {
-    fromEvent(this.radioTemperature, "change").subscribe(console.log);
+  private RadioPrecipitationUnitObservable() {
+    fromEvent(this.radioPrecipitation, "change")
+      .pipe(map((e: Event) => (e.target as HTMLInputElement).value === "true"))
+      .subscribe(this.PrecipitationSubject);
   }
 }
