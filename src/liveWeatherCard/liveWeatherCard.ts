@@ -9,10 +9,14 @@ import { ILiveWeather } from "../interface";
 import { Subject } from "rxjs";
 
 export class LiveWeatherCard {
-  private precipitationSymbol: string;
-  private temperatureSymbol: string;
+  private temperature: string;
+  private precipitation: string;
+  private precipitationSymbol: string = "mm";
+  private temperatureSymbol: string = "°C";
   private valueContainerDiv: HTMLElement;
   private titleP: HTMLElement;
+  private temperatureValueDiv: HTMLElement;
+  private precipitationValueDiv: HTMLElement;
 
   constructor(
     host: HTMLElement,
@@ -51,34 +55,32 @@ export class LiveWeatherCard {
     host.append(iconElement);
   }
 
-  CreateTemperatureDiv(host: HTMLElement, value: string) {
+  CreateTemperatureDiv(value: string) {
     const temperatureDiv = document.createElement("div");
     temperatureDiv.className = "CreateDiv";
 
     const temperatureIconDiv = document.createElement("div");
     this.AppendIcon(temperatureIconDiv, faThermometerHalf, "TemperatureIcon");
 
-    const temperatureValueDiv = document.createElement("div");
-    temperatureValueDiv.innerHTML = value + "°C";
+    this.temperatureValueDiv = document.createElement("div");
+    this.TemperatureDivInnerHTML(value);
 
-    temperatureDiv.append(temperatureIconDiv);
-    temperatureDiv.append(temperatureValueDiv);
-    host.append(temperatureDiv);
+    temperatureDiv.append(temperatureIconDiv, this.temperatureValueDiv);
+    this.valueContainerDiv.append(temperatureDiv);
   }
 
-  CreatePrecipitationDiv(host: HTMLElement, value: string) {
+  CreatePrecipitationDiv(value: string) {
     const precipitationDiv = document.createElement("div");
     precipitationDiv.className = "CreateDiv";
 
     const precipitationIconDiv = document.createElement("div");
     this.AppendIcon(precipitationIconDiv, faCloudRain, "PrecipitationIcon");
 
-    const precipitationValueDiv = document.createElement("div");
-    precipitationValueDiv.innerHTML = value + "mm";
+    this.precipitationValueDiv = document.createElement("div");
+    this.PrecipitationDivInnerHTML(value);
 
-    // precipitationDiv.append(precipitationIconDiv);
-    precipitationDiv.append(precipitationIconDiv, precipitationValueDiv);
-    host.append(precipitationDiv);
+    precipitationDiv.append(precipitationIconDiv, this.precipitationValueDiv);
+    this.valueContainerDiv.append(precipitationDiv);
   }
 
   SubscribePlace(titleP: HTMLElement, subject: Subject<string>) {
@@ -86,14 +88,13 @@ export class LiveWeatherCard {
       titleP.innerHTML = x;
       FetchLiveWeather(x)
         .then((x: ILiveWeather[]) => {
-          this.CreatePrecipitationDiv(
-            this.valueContainerDiv,
-            x[0].precipitationProbability.toString()
-          );
-          this.CreateTemperatureDiv(
-            this.valueContainerDiv,
-            x[0].temperature.toString()
-          );
+          while (this.valueContainerDiv.firstChild) {
+            this.valueContainerDiv.removeChild(
+              this.valueContainerDiv.firstChild
+            );
+          }
+          this.CreatePrecipitationDiv(x[0].precipitationProbability.toString());
+          this.CreateTemperatureDiv(x[0].temperature.toString());
         })
         .catch(console.log);
     });
@@ -103,10 +104,14 @@ export class LiveWeatherCard {
     subject.subscribe((x) => {
       if (x === false) {
         this.temperatureSymbol = "°F";
-        // (x * 9) / 5 + 32);
+        this.TemperatureDivInnerHTML(
+          ((Number(this.temperature) * 9) / 5 + 32).toString()
+        );
       } else {
         this.temperatureSymbol = "°C";
-        //(x - 32) * 5) / 9);
+        this.TemperatureDivInnerHTML(
+          (((Number(this.temperature) - 32) * 5) / 9).toString()
+        );
       }
     });
   }
@@ -115,11 +120,25 @@ export class LiveWeatherCard {
     subject.subscribe((x) => {
       if (x === false) {
         this.precipitationSymbol = "ml";
-        //(x) => x * 1000);
+        this.PrecipitationDivInnerHTML(
+          (Number(this.precipitation) * 1000).toString()
+        );
       } else {
         this.precipitationSymbol = "mm";
-        // x / 1000);
+        this.PrecipitationDivInnerHTML(
+          (Number(this.precipitation) / 1000).toString()
+        );
       }
     });
+  }
+
+  private TemperatureDivInnerHTML(value: string) {
+    this.temperature = value;
+    this.temperatureValueDiv.innerHTML = value + " " + this.temperatureSymbol;
+  }
+  private PrecipitationDivInnerHTML(value: string) {
+    this.precipitation = value;
+    this.precipitationValueDiv.innerHTML =
+      value + " " + this.precipitationSymbol;
   }
 }
