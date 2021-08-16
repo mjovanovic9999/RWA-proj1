@@ -11,6 +11,7 @@ import {
   filter,
   interval,
   map,
+  merge,
   mergeMap,
   Observable,
   of,
@@ -180,12 +181,23 @@ export class LiveWeatherCard {
   }
 
   private MeasurePrecipitation(): Observable<string> {
-    return interval(3000).pipe(
-      takeUntil(this.stopMeasuringSubject),
-      mergeMap(() =>
-        of(Number(this.precipitation) + Math.random() / 10 - 0.049999).pipe(
-          filter((value) => value >= 0),
-          map((value: number) => value.toFixed(3))
+    return merge(
+      interval(3000).pipe(
+        takeUntil(this.stopMeasuringSubject),
+        mergeMap(() =>
+          of(Number(this.precipitation) + Math.random() / 10 - 0.049999).pipe(
+            filter((value) => value >= 0),
+            map((value: number) => value.toFixed(3))
+          )
+        )
+      ),
+      interval(20000).pipe(
+        takeUntil(this.stopMeasuringSubject),
+        mergeMap(() =>
+          of(Number(this.precipitation) + Math.random() / 10 - 0.049999).pipe(
+            filter((value) => value >= 0),
+            map((value: number) => value.toFixed(3))
+          )
         )
       )
     );
@@ -195,12 +207,7 @@ export class LiveWeatherCard {
     temperature: Observable<string>,
     precipitation: Observable<string>
   ) {
-    zip(
-      temperature,
-      precipitation,
-      interval(10000).pipe(map((x) => x.toString()))
-    ).subscribe((values: string[]) => {
-      console.log(values);
+    zip(temperature, precipitation).subscribe((values: string[]) => {
       this.TemperatureDivInnerHTML(values[0]);
       this.PrecipitationDivInnerHTML(values[1]);
     });
