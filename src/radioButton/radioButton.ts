@@ -1,33 +1,27 @@
 import { fromEvent, map, Observable, Subject } from "rxjs";
 import "./style.css";
-//celsius u farenhait x*9/5 +32
-//mm u 1000* ml
-//fahrenheit
+
 export class RadioButton {
-  private isCelsius = true;
-  private isMm = true;
   private host: HTMLElement;
   private radioTemperature: HTMLElement;
   private radioPrecipitation: HTMLElement;
 
-  private temperatureSubject: Subject<boolean>=new Subject<boolean>();
+  private temperatureSubject: Subject<boolean> = new Subject<boolean>();
   public get TemperatureSubject(): Subject<boolean> {
     return this.temperatureSubject;
   }
 
-  private precipitationSubject: Subject<boolean>=new Subject<boolean>();;
+  private precipitationSubject: Subject<boolean> = new Subject<boolean>();
   public get PrecipitationSubject(): Subject<boolean> {
     return this.precipitationSubject;
   }
 
   constructor(host: HTMLElement) {
     this.host = host;
-    this.isCelsius = true;
     this.DrawDoubleRadioGroups();
   }
 
   private DrawDoubleRadioGroups() {
-    this.isMm = true;
     this.DrawRadio("temp", "Celsius", "Fahrenheit", "DivParentFirst", true);
     this.DrawRadio("preci", "mm", "ml", "DivParentSecond", false);
 
@@ -68,7 +62,6 @@ export class RadioButton {
     firstLabel.innerHTML = firstName;
 
     firstParent.append(firstRadio, firstLabel);
-    // firstParent.append(firstRadio);
 
     const secondParent = document.createElement("div");
     secondParent.setAttribute("class", "RadioParent");
@@ -84,14 +77,13 @@ export class RadioButton {
     secondLabel.innerHTML = secondName;
 
     secondParent.append(secondRadio, secondLabel);
-    // secondParent.append(secondRadio);
   }
 
   private RadioTemperatureUnitObservable() {
     fromEvent(this.radioTemperature, "change")
       .pipe(map((e: Event) => (e.target as HTMLInputElement).value === "true"))
       .subscribe(this.temperatureSubject);
-      this.temperatureSubject.subscribe(console.log)
+    this.temperatureSubject.subscribe(console.log);
   }
 
   private RadioPrecipitationUnitObservable() {
@@ -100,3 +92,4 @@ export class RadioButton {
       .subscribe(this.PrecipitationSubject);
   }
 }
+File

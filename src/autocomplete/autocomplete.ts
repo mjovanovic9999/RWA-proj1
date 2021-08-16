@@ -7,7 +7,6 @@ import {
   from,
   fromEvent,
   map,
-  mergeMap,
   Observable,
   skip,
   Subject,
@@ -69,7 +68,7 @@ export class Autocomplete {
         .pipe(this.AutocompleteFetchOperator)
         .subscribe((data: string[]) => {
           this.hasSelectedValue = false;
-          data.map((user, index) => {
+          data.map((user) => {
             let newResult = document.createElement("li");
             newResult.className = "AutocompleteOneResult";
             newResult.textContent = user;

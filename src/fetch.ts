@@ -1,4 +1,3 @@
-import { filter, from, Observable } from "rxjs";
 import { ILiveWeather, IPrecipitation, ITemperature } from "./interface";
 
 const MYURL = "http://localhost:3000";
@@ -34,7 +33,9 @@ export function FetchMonthTemperatures(
       if (response.ok) return response.json();
       else console.log(response.status.toString() + " " + response.statusText);
     })
-    .then((x) => x.map((val: ITemperature) => (val.degreeMax+val.degreeMin)/2))
+    .then((x) =>
+      x.map((val: ITemperature) => (val.degreeMax + val.degreeMin) / 2)
+    )
     .catch((err) => console.log(err));
 }
 

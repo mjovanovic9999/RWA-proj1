@@ -2,7 +2,7 @@ export interface ILiveWeather {
   id: number;
   location: string;
   temperature: number;
-  precipitationProbability: number;
+  precipitation: number;
 }
 
 export interface IPrecipitation {
@@ -21,32 +21,3 @@ export interface ITemperature {
   day: number;
   month: number;
 }
-
-export interface Settings{
-  isCelsius: boolean;
-  isMm: boolean;
-}
-
-// export interface IChartInfo {//vrv ne trabe
-//   labels: string[];
-//   datasets: [
-//     {
-//       label: string;
-//       data: number[];
-//       backgroundColor: string[];
-//       borderColor: string[];
-//       borderWidth: number;
-//       tension: number;
-//       yAxisID: string;
-//     },
-//     {
-//       label: string;
-//       data: number[];
-//       backgroundColor: string[];
-//       borderColor: string[];
-//       borderWidth: number;
-//       tension: number;
-//       yAxisID: string;
-//     }
-//   ];
-// }

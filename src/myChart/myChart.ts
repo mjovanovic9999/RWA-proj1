@@ -1,16 +1,12 @@
 import "./style.css";
-
 import * as Chart from "chart.js";
 import { Subject } from "rxjs";
 import { FetchMonthPrecipitations, FetchMonthTemperatures } from "../fetch";
 
-//import { Chart,LinearScale  } from "chart.js";
-
 export default class MyChart {
   private canvas: HTMLCanvasElement;
   private canvasParentDiv: HTMLElement;
-  private chartInstance: any; //Chart
-  //private labels: string[];
+  private chartInstance: unknown; //Chart
   private pointsLeft: number[];
   private pointsRight: number[];
   private leftUnit = "°C";
@@ -22,14 +18,12 @@ export default class MyChart {
     temperatureUnit: Subject<boolean>,
     precipitationUnit: Subject<boolean>
   ) {
-
     this.SubscribePlace(place);
 
     this.canvasParentDiv = document.createElement("div");
     this.canvasParentDiv.className = "Canvas";
 
     host.appendChild(this.canvasParentDiv);
-
     this.AppendCanvas();
     this.draw();
 
@@ -223,14 +217,6 @@ export default class MyChart {
     };
 
     this.chartInstance = new Chart(this.canvas, pom);
-    //btn
-    //   let btn = document.createElement("button");
-    //   document.body.appendChild(btn);
-    //   btn.onclick = () => {
-    //       actions[0].handler(myChart);
-    //   };
-    //   btn.innerHTML = "dugme";
-
     return;
   }
 

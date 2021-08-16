@@ -2,12 +2,10 @@ import "./style.css";
 import { RadioButton } from "../radioButton/radioButton";
 import { Autocomplete } from "../autocomplete/autocomplete";
 import { LiveWeatherCard } from "../liveWeatherCard/liveWeatherCard";
-import { FetchMonthPrecipitations, FetchMonthTemperatures } from "../fetch";
 import MyChart from "../myChart/myChart";
 
 export class ViewMain {
-  private mainDiv: HTMLElement; //mozda ne treba da je atribut
-
+  private mainDiv: HTMLElement;
   constructor() {
     this.InitializeHTML();
     this.DrawTitle();
@@ -21,7 +19,7 @@ export class ViewMain {
     );
 
     new MyChart(
-      document.body,
+      this.mainDiv,//document.body,
       auto.PlaceSubject,
       pom.TemperatureSubject,
       pom.PrecipitationSubject

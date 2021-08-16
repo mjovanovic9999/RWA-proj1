@@ -6,7 +6,18 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FetchLiveWeather } from "../fetch";
 import { ILiveWeather } from "../interface";
-import { Subject } from "rxjs";
+import {
+  combineLatest,
+  filter,
+  interval,
+  map,
+  mergeMap,
+  Observable,
+  of,
+  Subject,
+  takeUntil,
+  zip,
+} from "rxjs";
 
 export class LiveWeatherCard {
   private temperature: string;
@@ -17,6 +28,7 @@ export class LiveWeatherCard {
   private titleP: HTMLElement;
   private temperatureValueDiv: HTMLElement;
   private precipitationValueDiv: HTMLElement;
+  private stopMeasuringSubject: Subject<number> = new Subject();
 
   constructor(
     host: HTMLElement,
@@ -93,8 +105,21 @@ export class LiveWeatherCard {
               this.valueContainerDiv.firstChild
             );
           }
-          this.CreatePrecipitationDiv(x[0].precipitationProbability.toString());
-          this.CreateTemperatureDiv(x[0].temperature.toString());
+          this.CreateTemperatureDiv(
+            this.temperatureSymbol === "°C"
+              ? x[0].temperature.toString()
+              : ((x[0].temperature * 9) / 5 + 32).toString()
+          );
+          this.CreatePrecipitationDiv(
+            this.precipitationSymbol === "mm"
+              ? x[0].precipitation.toString()
+              : (x[0].precipitation * 1000).toString()
+          );
+          this.stopMeasuringSubject.next(0);
+          this.UpdateLiveWeather(
+            this.MeasureTemperature(),
+            this.MeasurePrecipitation()
+          );
         })
         .catch(console.log);
     });
@@ -105,12 +130,12 @@ export class LiveWeatherCard {
       if (x === false) {
         this.temperatureSymbol = "°F";
         this.TemperatureDivInnerHTML(
-          ((Number(this.temperature) * 9) / 5 + 32).toString()
+          ((Number(this.temperature) * 9) / 5 + 32).toFixed(3)
         );
       } else {
         this.temperatureSymbol = "°C";
         this.TemperatureDivInnerHTML(
-          (((Number(this.temperature) - 32) * 5) / 9).toString()
+          (((Number(this.temperature) - 32) * 5) / 9).toFixed(3)
         );
       }
     });
@@ -121,12 +146,12 @@ export class LiveWeatherCard {
       if (x === false) {
         this.precipitationSymbol = "ml";
         this.PrecipitationDivInnerHTML(
-          (Number(this.precipitation) * 1000).toString()
+          (Number(this.precipitation) * 1000).toFixed(3)
         );
       } else {
         this.precipitationSymbol = "mm";
         this.PrecipitationDivInnerHTML(
-          (Number(this.precipitation) / 1000).toString()
+          (Number(this.precipitation) / 1000).toFixed(3)
         );
       }
     });
@@ -136,9 +161,53 @@ export class LiveWeatherCard {
     this.temperature = value;
     this.temperatureValueDiv.innerHTML = value + " " + this.temperatureSymbol;
   }
+
   private PrecipitationDivInnerHTML(value: string) {
     this.precipitation = value;
     this.precipitationValueDiv.innerHTML =
       value + " " + this.precipitationSymbol;
+  }
+
+  private MeasureTemperature(): Observable<string> {
+    return interval(2000).pipe(
+      takeUntil(this.stopMeasuringSubject),
+      mergeMap(() =>
+        of(Number(this.temperature) + Math.random() / 10 - 0.049999).pipe(
+          map((value: number) => value.toFixed(3))
+        )
+      )
+    );
+  }
+
+  private MeasurePrecipitation(): Observable<string> {
+    return interval(3000).pipe(
+      takeUntil(this.stopMeasuringSubject),
+      mergeMap(() =>
+        of(Number(this.precipitation) + Math.random() / 10 - 0.049999).pipe(
+          filter((value) => value >= 0),
+          map((value: number) => value.toFixed(3))
+        )
+      )
+    );
+  }
+
+  private UpdateLiveWeather(
+    temperature: Observable<string>,
+    precipitation: Observable<string>
+  ) {
+    zip(
+      temperature,
+      precipitation,
+      interval(10000).pipe(map((x) => x.toString()))
+    ).subscribe((values: string[]) => {
+      console.log(values);
+      this.TemperatureDivInnerHTML(values[0]);
+      this.PrecipitationDivInnerHTML(values[1]);
+    });
+    // combineLatest([temperature, precipitation]).subscribe(([temp, prec]) => {
+    //   console.log([temp, prec]);
+    //   this.TemperatureDivInnerHTML(temp);
+    //   this.PrecipitationDivInnerHTML(prec);
+    // });
   }
 }

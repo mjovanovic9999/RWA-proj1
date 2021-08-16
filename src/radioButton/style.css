@@ -1,5 +1,4 @@
 .RadioLabel {
-  /* color:white; */
   font-size: 20px;
   margin: 5px;
 }
@@ -13,10 +12,10 @@
   margin: 2px;
   display: flex;
   flex-direction: column;
-  background-color: rgba(246, 252, 255, 0.70);
+  background-color: rgba(246, 252, 255, 0.7);
   border-radius: 25px;
   position: absolute;
-  top:15.5%;
+  top: 15.5%;
   right: 1%;
 }
 
@@ -24,9 +23,9 @@
   margin: 2px;
   display: flex;
   flex-direction: column;
-  background-color: rgba(246, 252, 255, 0.70);
+  background-color: rgba(246, 252, 255, 0.7);
   border-radius: 25px;
   position: absolute;
-  top:35%;
+  top: 35%;
   right: 1%;
 }
