@@ -83,7 +83,6 @@ export class RadioButton {
     fromEvent(this.radioTemperature, "change")
       .pipe(map((e: Event) => (e.target as HTMLInputElement).value === "true"))
       .subscribe(this.temperatureSubject);
-    this.temperatureSubject.subscribe(console.log);
   }
 
   private RadioPrecipitationUnitObservable() {
@@ -92,4 +91,3 @@ export class RadioButton {
       .subscribe(this.PrecipitationSubject);
   }
 }
-File

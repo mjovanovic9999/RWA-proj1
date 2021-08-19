@@ -139,6 +139,11 @@ export class LiveWeatherCard {
           (((Number(this.temperature) - 32) * 5) / 9).toFixed(3)
         );
       }
+      this.stopMeasuringSubject.next(0);
+      this.UpdateLiveWeather(
+        this.MeasureTemperature(),
+        this.MeasurePrecipitation()
+      );
     });
   }
 
