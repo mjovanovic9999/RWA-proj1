@@ -216,10 +216,5 @@ export class LiveWeatherCard {
       this.TemperatureDivInnerHTML(values[0]);
       this.PrecipitationDivInnerHTML(values[1]);
     });
-    // combineLatest([temperature, precipitation]).subscribe(([temp, prec]) => {
-    //   console.log([temp, prec]);
-    //   this.TemperatureDivInnerHTML(temp);
-    //   this.PrecipitationDivInnerHTML(prec);
-    // });
   }
 }

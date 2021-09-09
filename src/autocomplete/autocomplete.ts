@@ -83,10 +83,8 @@ export class Autocomplete {
     return ob$.pipe(
       debounceTime(300),
       distinctUntilChanged(),
-      switchMap(
-        (
-          value: string //ili mergemap
-        ) => from(FetchLocations(value)).pipe(takeUntil(ob$.pipe(skip(1))))
+      switchMap((value: string) =>
+        from(FetchLocations(value)).pipe(takeUntil(ob$.pipe(skip(1))))
       ),
       filter((x) => x.length !== 0)
     );

@@ -55,16 +55,3 @@ export function FetchAllLocations(): Promise<string[]> {
     })
     .catch((err) => console.log(err));
 }
-
-/**fetch(`${URL + "/korisnici/prijava"}`, {
-    method: "post",
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      KorisnickoIme: korisnickoIme,
-      Lozinka: lozinka,
-      ZapamtiMe: zapamtiMe,
-    }),
-  }) */

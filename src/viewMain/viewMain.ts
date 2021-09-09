@@ -6,23 +6,24 @@ import MyChart from "../myChart/myChart";
 
 export class ViewMain {
   private mainDiv: HTMLElement;
+
   constructor() {
     this.InitializeHTML();
     this.DrawTitle();
-    const pom = new RadioButton(this.mainDiv);
-    const auto = new Autocomplete(this.mainDiv);
+    const radio = new RadioButton(this.mainDiv);
+    const autocomplete = new Autocomplete(this.mainDiv);
     new LiveWeatherCard(
       this.mainDiv,
-      auto.PlaceSubject,
-      pom.TemperatureSubject,
-      pom.PrecipitationSubject
+      autocomplete.PlaceSubject,
+      radio.TemperatureSubject,
+      radio.PrecipitationSubject
     );
 
     new MyChart(
-      this.mainDiv,//document.body,
-      auto.PlaceSubject,
-      pom.TemperatureSubject,
-      pom.PrecipitationSubject
+      this.mainDiv,
+      autocomplete.PlaceSubject,
+      radio.TemperatureSubject,
+      radio.PrecipitationSubject
     );
   }
 
